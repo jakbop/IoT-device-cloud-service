@@ -16,6 +16,59 @@
 - MQTT库：Eclipse Paho MQTT Async
 - 编译工具：GCC + Make
 
+## 项目部署
+
+- 安装 MQTT Broker：
+```
+知名开源 MQTT Broker 推荐：EMQX、Mosquitto、HiveMQ 等
+sudo apt install -y mosquitto
+```
+
+- 配置 mosquitto 以开启 WebSocket 服务：
+```
+vim /etc/mosquitto/mosquitto.conf
+
+# 在文件末尾加入如下配置
+
+# 标准 MQTT TCP 连接（可选）
+listener 1883
+protocol mqtt
+
+# WebSocket 连接
+listener 8083
+protocol websockets
+
+# 允许匿名访问（测试用，生产环境建议关掉并配置认证）
+allow_anonymous true
+
+
+# 重启 Mosquitto 服务，以让配置生效
+sudo systemctl restart mosquitto
+
+# 注意：配置防火墙规则，放通 TCP 端口 1883 和 8083
+
+# 强烈建议使用 MQTTX 测试 MQTT Server 是否运行正常
+```
+
+- 项目运行启动
+```
+# 本项目依赖 paho.mqtt.c 库，通过它连接 MQTT Server，所以编译前需要先安装该库
+
+sudo apt update
+sudo apt install -y software-properties-common
+sudo add-apt-repository ppa:mosquitto-dev/mosquitto-ppa
+sudo apt update
+sudo apt install -y libpaho-mqtt-dev
+
+sudo apt install -y git gcc make
+
+git clone https://gitee.com/itmojun/device_cloud
+
+cd device_cloud
+
+make
+```
+
 ## 编译运行
 
 ```bash
